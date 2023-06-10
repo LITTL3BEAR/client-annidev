@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-express-app.herokuapp.com/api'
+  apiUrl: 'https://annidev-server.herokuapp.com/api'
 };

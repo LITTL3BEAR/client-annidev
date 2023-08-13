@@ -13,7 +13,7 @@ import { Manga } from '../manga.model';
   styleUrls: ['./manga-list.component.scss']
 })
 export class MangaListComponent implements OnInit {
-  displayedColumns: string[] = ['title', 'chapter', 'status', 'actions'];
+  displayedColumns: string[] = ['name', 'author', 'chapter', 'status', 'link', 'actions'];
   dataSource!: MatTableDataSource<Manga>;
 
   @ViewChild(MatSort) sort!: MatSort;

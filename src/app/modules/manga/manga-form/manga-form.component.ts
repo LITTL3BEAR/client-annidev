@@ -17,9 +17,9 @@ export class MangaFormComponent implements OnInit {
     private fb: FormBuilder,
   ) {
     this.form = this.fb.group({
-      title: ['', Validators.required],
+      name: ['', Validators.required],
       author: [''],
-      chapter: ['', Validators.required],
+      chapter: [''],
       status: [''],
       link: [''],
     });
@@ -32,7 +32,7 @@ export class MangaFormComponent implements OnInit {
   initializeForm(): void {
     if (this.data.isEdit) {
       this.form.patchValue({
-        title: this.data.manga.title,
+        name: this.data.manga.name,
         author: this.data.manga.author,
         chapter: this.data.manga.chapter,
         status: this.data.manga.status,

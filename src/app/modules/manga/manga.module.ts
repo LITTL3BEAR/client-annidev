@@ -7,6 +7,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MangaRoutingModule } from './manga-routing.module';
 import { MangaComponent } from './manga.component';
@@ -30,6 +31,7 @@ import { MangaService } from './manga.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
     MatDialogModule
   ],
   providers: [MangaService],

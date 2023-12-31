@@ -1,0 +1,24 @@
+service: client-service
+runtime: nodejs16  # or whichever is the latest supported version
+env: standard
+instance_class: F1
+
+automatic_scaling:
+  max_instances: 1
+
+handlers:
+- url: /assets
+  static_dir: dist/annidev-client/assets
+  secure: always
+
+- url: /(.*\.(gif|png|jpg|css|js|ico|json|svg|txt|woff|woff2|ttf|map|html))$
+  static_files: dist/annidev-client\1
+  upload: dist/annidev-client/(.*\.(gif|png|jpg|css|js|ico|json|svg|txt|woff|woff2|ttf|map|html))$
+  secure: always
+  redirect_http_response_code: 301
+
+- url: /.*
+  static_files: dist/annidev-client/index.html
+  upload: dist/annidev-client/index.html
+  secure: always
+  redirect_http_response_code: 301

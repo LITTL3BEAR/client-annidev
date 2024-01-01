@@ -1,6 +1,9 @@
+# Not upload to GCP
+
 node_modules/
+dist/
+.git/
 .gitignore
 .angular
-
-# Include everything in the dist folder
-!dist/
+.vscode
+.editorconfig

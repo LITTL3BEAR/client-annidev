@@ -1,5 +1,8 @@
-node_modules
-dist
+# Not upload to GIT
+
+node_modules/
+dist/
+.git/
 .angular
 .vscode
 .editorconfig

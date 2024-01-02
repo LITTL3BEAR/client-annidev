@@ -2,6 +2,7 @@
 
 node_modules/
 src/
+package-lock.json
 .git/
 .gitignore
 .angular/

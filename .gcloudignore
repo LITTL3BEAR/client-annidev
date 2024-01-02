@@ -1,9 +1,9 @@
 # Not upload to GCP
 
 node_modules/
-dist/
+src/
 .git/
 .gitignore
-.angular
-.vscode
+.angular/
+.vscode/
 .editorconfig

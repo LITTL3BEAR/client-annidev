@@ -1,4 +1,3 @@
-service: client
 runtime: python39
 
 handlers:

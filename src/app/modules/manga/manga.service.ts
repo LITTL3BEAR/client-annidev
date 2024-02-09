@@ -17,7 +17,7 @@ export class MangaService {
 
   constructor(private http: HttpClient) { }
 
-  getMangas(): Observable<Manga[]> {
+  getAllManga(): Observable<Manga[]> {
     return this.http.get<Manga[]>(this.mangaUrl)
       .pipe(catchError(this.handleError));
   }
@@ -39,6 +39,11 @@ export class MangaService {
 
   deleteManga(id: string): Observable<Manga> {
     return this.http.delete<Manga>(`${this.mangaUrl}/${id}`, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  syncManga(): Observable<string> {
+    return this.http.get<string>(`${this.mangaUrl}/sync`, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 

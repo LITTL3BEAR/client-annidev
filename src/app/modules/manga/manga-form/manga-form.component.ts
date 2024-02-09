@@ -16,30 +16,17 @@ export class MangaFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { manga: Manga, isEdit: boolean },
     private fb: FormBuilder,
   ) {
+    const { isEdit, manga } = data
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      author: [''],
-      chapter: [''],
-      status: [''],
-      link: [''],
+      name: [isEdit ? manga.name : '', Validators.required],
+      author: [isEdit ? manga.author : ''],
+      chapter: [isEdit ? manga.chapter : ''],
+      status: [isEdit ? manga.status : ''],
+      link: [isEdit ? manga.link : ''],
     });
   }
 
-  ngOnInit(): void {
-    this.initializeForm();
-  }
-
-  initializeForm(): void {
-    if (this.data.isEdit) {
-      this.form.patchValue({
-        name: this.data.manga.name,
-        author: this.data.manga.author,
-        chapter: this.data.manga.chapter,
-        status: this.data.manga.status,
-        link: this.data.manga.link
-      });
-    }
-  }
+  ngOnInit(): void { }
 
   onSubmit(): void {
     if (this.form.valid) {

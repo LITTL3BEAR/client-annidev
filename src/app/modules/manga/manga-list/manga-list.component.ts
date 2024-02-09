@@ -29,7 +29,7 @@ export class MangaListComponent implements OnInit {
   }
 
   fetchMangas(): void {
-    this.mangaService.getMangas().subscribe((mangas: Manga[]) => {
+    this.mangaService.getAllManga().subscribe((mangas: Manga[]) => {
       this.dataSource = new MatTableDataSource(mangas);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
@@ -86,6 +86,12 @@ export class MangaListComponent implements OnInit {
     this.mangaService.deleteManga(manga._id).subscribe((deletedManga) => {
       this.fetchMangas();
     });
+  }
+
+  syncManga(): void {
+    this.mangaService.syncManga().subscribe((result: string) => {
+      console.log('syncManga: ', result);
+    })
   }
 
 }

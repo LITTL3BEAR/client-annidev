@@ -19,7 +19,11 @@
 
     <mat-form-field>
       <mat-label>Status</mat-label>
-      <input matInput formControlName="status">
+      <mat-select formControlName="status">
+        <mat-option value="new">New</mat-option>
+        <mat-option value="read">Read</mat-option>
+        <mat-option value="done">Done</mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field>

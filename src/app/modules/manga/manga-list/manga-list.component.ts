@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MangaFormComponent } from '../manga-form/manga-form.component';
 import { MangaService } from '../manga.service';
 import { Manga } from '../manga.model';
+import { AlertService } from '../../../shared/components/alert/alert.service';
 
 @Component({
   selector: 'app-manga-list',
@@ -20,11 +21,13 @@ export class MangaListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
+    public dialog: MatDialog,
     public mangaService: MangaService,
-    public dialog: MatDialog
+    public alertService: AlertService
   ) { }
 
   ngOnInit(): void {
+
     this.fetchMangas();
   }
 

@@ -1,0 +1,7 @@
+<div *ngIf="alert" [ngClass]="alert.type">
+  {{ alert.message }}
+  <div *ngIf="alert.type === 'loading' && alert.progress !== undefined">
+    Loading: {{ alert.progress }}%
+    <progress value="{{ alert.progress }}" max="100"></progress>
+  </div>
+</div>

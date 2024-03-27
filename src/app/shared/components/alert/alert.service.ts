@@ -1,40 +1,40 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { Alert, AlertType } from './alert.model';
+import { Alert } from './alert.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertService {
-  private alertSource = new BehaviorSubject<Alert | null>(null);
-  alert$ = this.alertSource.asObservable();
+  private alertSubject = new BehaviorSubject<Alert>(null);
+  alertState = this.alertSubject.asObservable();
 
   constructor() { }
 
-  success(message: string, timeout?: number) {
-    this.alertSource.next(new Alert('success', message, timeout));
+  success(message: string) {
+    this.alertSubject.next(new Alert('success', message, timeout));
   }
 
-  error(message: string, timeout?: number) {
-    this.alertSource.next(new Alert('error', message, timeout));
+  error(message: string) {
+    this.alertSubject.next(new Alert('error', message, timeout));
   }
 
-  warning(message: string, timeout?: number) {
-    this.alertSource.next(new Alert('warning', message, timeout));
+  warning(message: string) {
+    this.alertSubject.next(new Alert('warning', message, timeout));
   }
 
-  loading(message: string, timeout?: number) {
-    this.alertSource.next(new Alert('loading', message, timeout));
+  loading(message: string = 'Loading...') {
+    this.alertSubject.next(new Alert('loading', message, timeout));
   }
 
   loadingProgress(message: string, progress: number) {
-    this.alertSource.next(new Alert('loading', message, undefined, progress));
+    this.alertSubject.next(new Alert('loading', message, undefined, progress));
   }
 
   updateProgress(progress: number) {
-    const currentAlert = this.alertSource.value;
+    const currentAlert = this.alertSubject.value;
     if (currentAlert?.type === 'loading') {
-      this.alertSource.next(new Alert('loading', currentAlert.message, undefined, progress));
+      this.alertSubject.next(new Alert('loading', currentAlert.message, undefined, progress));
     }
   }
 }

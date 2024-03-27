@@ -92,8 +92,10 @@ export class MangaListComponent implements OnInit {
   }
 
   syncManga(): void {
+    this.alertService.loading('Loading..')
+    return
     this.mangaService.syncManga().subscribe((result: string) => {
-      console.log('syncManga: ', result);
+
     })
   }
 

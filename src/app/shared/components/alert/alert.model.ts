@@ -1,10 +1,8 @@
 export class Alert {
-  constructor(
-    public type: AlertType,
-    public message: string,
-    public timeout?: number,
-    public progress?: number
-  ) {}
+  type!: AlertType;
+  message!: string;
+  icon?: string;
+  closable?: boolean;
 }
 
 export type AlertType = 'success' | 'error' | 'warning' | 'loading';

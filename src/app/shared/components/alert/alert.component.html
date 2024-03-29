@@ -1,10 +1,17 @@
-<div *ngIf="alert" class="alert" [ngClass]="alert.type">
-  <mat-spinner *ngIf="alert.type === 'loading'"></mat-spinner>
-  <ng-container *ngIf="alert.type !== 'loading'">
-    <mat-icon *ngIf="alert.icon">{{ alert.icon }}</mat-icon>
-    <span>{{ alert.message }}</span>
-    <button mat-icon-button *ngIf="alert.closable" (click)="close()">
-      <mat-icon>close</mat-icon>
+<div class="alert-container" *ngIf="alert" [ngClass]="alert.type">
+  <h2 mat-dialog-title class="alert-title" *ngIf="alert.title">{{ alert.title }}</h2>
+
+  <mat-dialog-content class="alert-content">
+    <mat-spinner *ngIf="alert.type === 'loading'"></mat-spinner>
+    <ng-container *ngIf="alert.type !== 'loading'">
+      <mat-icon class="alert-icon" *ngIf="alert.icon">{{ alert.icon }}</mat-icon>
+      <p class="alert-message">{{ alert.message }}</p>
+    </ng-container>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="alert-actions" *ngIf="alert.buttons?.length" align="end">
+    <button mat-raised-button class="alert-actions" *ngFor="let button of alert.buttons" (click)="button.action()">
+      {{ button.text }}
     </button>
-  </ng-container>
+  </mat-dialog-actions>
 </div>

@@ -1,40 +1,70 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { AlertComponent } from './alert.component';
 import { Alert } from './alert.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertService {
-  private alertSubject = new BehaviorSubject<Alert>(null);
-  alertState = this.alertSubject.asObservable();
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
-  success(message: string) {
-    this.alertSubject.next(new Alert('success', message, timeout));
-  }
+  openAlert(alert: Alert, config?: MatDialogConfig) {
+    const dialogConfig = {
+      ...config,
+      data: { alert }
+    };
 
-  error(message: string) {
-    this.alertSubject.next(new Alert('error', message, timeout));
-  }
-
-  warning(message: string) {
-    this.alertSubject.next(new Alert('warning', message, timeout));
+    try {
+      this.dialog.open(AlertComponent, dialogConfig);
+    } catch (error) {
+      console.error('Error opening alert dialog:', error);
+    }
   }
 
   loading(message: string = 'Loading...') {
-    this.alertSubject.next(new Alert('loading', message, timeout));
+    return this.openAlert({
+      type: 'loading',
+      message,
+      icon: 'cached'
+    });
   }
 
-  loadingProgress(message: string, progress: number) {
-    this.alertSubject.next(new Alert('loading', message, undefined, progress));
+  success(message: string, title?: string, closable: boolean = true, buttons?: { text: string, action: () => void }[]) {
+    return this.openAlert({
+      type: 'success',
+      title,
+      message,
+      icon: 'check_circle',
+      closable,
+      buttons
+    });
   }
 
-  updateProgress(progress: number) {
-    const currentAlert = this.alertSubject.value;
-    if (currentAlert?.type === 'loading') {
-      this.alertSubject.next(new Alert('loading', currentAlert.message, undefined, progress));
-    }
+  error(message: string, title?: string, closable: boolean = true, buttons?: { text: string, action: () => void }[]) {
+    return this.openAlert({
+      type: 'error',
+      title,
+      message,
+      icon: 'error',
+      closable,
+      buttons
+    });
+  }
+
+  warning(message: string, title?: string, closable: boolean = true, buttons?: { text: string, action: () => void }[]) {
+    return this.openAlert({
+      type: 'warning',
+      title,
+      message,
+      icon: 'warning',
+      closable,
+      buttons
+    });
+  }
+
+  clear() {
+    this.dialog.closeAll();
   }
 }

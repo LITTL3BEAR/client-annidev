@@ -1,5 +1,60 @@
-.success { color: green; }
-.error { color: red; }
-.warning { color: orange; }
-.loading { color: blue; }
-progress { width: 100%; }
+.alert-container {
+  // border-radius: 8px;
+  // box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+  &.loading {
+    background-color: transparent;
+  }
+
+  &.success {
+    background-color: #77dd77;
+  }
+
+  &.error {
+    background-color: #ff6961;
+  }
+
+  &.warning {
+    background-color: #fffacd;
+  }
+}
+
+// .alert-content {
+//   display: flex;
+//   align-items: center;
+
+//   .alert-icon {
+//     font-size: 24px;
+//     margin-right: 16px;
+//   }
+
+//   .alert-title {
+//     margin: 0;
+//     font-weight: 500;
+//   }
+
+//   .alert-message {
+//     margin: 8px 0;
+//   }
+
+//   .alert-actions {
+//     position: absolute;
+//     top: 8px;
+//     right: 8px;
+//   }
+// }
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.alert-message {
+  transform: translateY(-50%);
+}
+
+.alert-actions {
+  gap: 0.5rem;
+}

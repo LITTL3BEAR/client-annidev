@@ -1,6 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { AlertService } from './alert.service';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Alert } from './alert.model';
 
 @Component({
@@ -8,19 +7,19 @@ import { Alert } from './alert.model';
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss']
 })
-export class AlertComponent implements OnInit, OnDestroy {
+export class AlertComponent implements OnInit {
   alert: Alert | null = null;
-  private subscription!: Subscription;
 
-  constructor(private alertService: AlertService) { }
+  constructor(
+    @Inject(MAT_DIALOG_DATA) private data: any,
+    private dialogRef: MatDialogRef<AlertComponent>,
+  ) { }
 
   ngOnInit() {
-    this.subscription = this.alertService.alertState.subscribe(alert => {
-      this.alert = alert;
-    });
+    this.alert = this.data.alert;
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+  close() {
+    this.dialogRef.close();
   }
 }

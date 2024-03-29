@@ -1,8 +1,8 @@
-export class Alert {
-  type!: AlertType;
-  message!: string;
-  icon?: string;
+export interface Alert {
+  type: 'loading' | 'success' | 'error' | 'warning';
+  message: string;
+  title?: string; 
+  icon?: string; 
   closable?: boolean;
+  buttons?: { text: string, action: () => void }[]; 
 }
-
-export type AlertType = 'success' | 'error' | 'warning' | 'loading';

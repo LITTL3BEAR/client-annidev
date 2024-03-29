@@ -91,18 +91,22 @@ export class MangaListComponent implements OnInit {
     });
   }
 
-  syncManga(v:string): void {
-    if(v == 'loading') this.alertService.loading()
-    if(v == 'success') this.alertService.success('Operation successful!')
-    if(v == 'error') this.alertService.error('Can not add new data','Insert Data')
-    if(v == 'warning') this.alertService.warning('Are you sure you want to delete this item?', 'Confirm Delete', true, [
+  syncManga(): void {
+    this.alertService.loading()
+    this.mangaService.syncManga().subscribe({
+      next: (res) => this.alertService.success(res),
+      error: (err) => this.alertService.error(err),
+    })
+  }
+
+  alert(v: string): void {
+    if (v == 'loading') this.alertService.loading()
+    if (v == 'success') this.alertService.success('Operation successful!')
+    if (v == 'error') this.alertService.error('Can not add new data', 'Insert Data')
+    if (v == 'warning') this.alertService.warning('Are you sure you want to delete this item?', 'Confirm Delete', true, [
       { text: 'Yes', action: () => console.log('Yes') },
       { text: 'No', action: () => console.log('No') }
     ]);
-    
-    // this.mangaService.syncManga().subscribe((result: string) => {
-
-    // })
   }
 
 }

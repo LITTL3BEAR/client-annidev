@@ -17,9 +17,11 @@ export class AlertService {
     };
 
     try {
-      this.dialog.open(AlertComponent, dialogConfig);
+      this.close()
+      return this.dialog.open(AlertComponent, dialogConfig);
     } catch (error) {
       console.error('Error opening alert dialog:', error);
+      return undefined
     }
   }
 
@@ -64,7 +66,7 @@ export class AlertService {
     });
   }
 
-  clear() {
+  close() {
     this.dialog.closeAll();
   }
 }

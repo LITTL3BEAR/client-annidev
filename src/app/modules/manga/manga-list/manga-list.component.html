@@ -1,10 +1,12 @@
-<button mat-raised-button color="accent" (click)="syncManga('loading')">loading</button>
-<button mat-raised-button color="accent" (click)="syncManga('success')">success</button>
-<button mat-raised-button color="accent" (click)="syncManga('error')">error</button>
-<button mat-raised-button color="accent" (click)="syncManga('warning')">warning</button>
+<div style="padding: 1rem;" align="center">
+  <button mat-raised-button color="accent" (click)="alert('loading')">loading</button>
+  <button mat-raised-button color="accent" (click)="alert('success')">success</button>
+  <button mat-raised-button color="accent" (click)="alert('error')">error</button>
+  <button mat-raised-button color="accent" (click)="alert('warning')">warning</button>
+</div>
 
 <div class="mat-elevation-z2">
-  <!-- <button mat-raised-button color="accent" (click)="syncManga()">Sync Manga</button> -->
+  <button mat-raised-button color="accent" (click)="syncManga()">Sync Manga</button>
   <button mat-raised-button color="primary" (click)="addManga()">Add Manga</button>
   <!-- Search Box -->
   <mat-form-field class="filter-box">

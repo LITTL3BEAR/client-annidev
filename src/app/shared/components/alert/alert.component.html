@@ -10,7 +10,7 @@
   </mat-dialog-content>
 
   <mat-dialog-actions class="alert-actions" *ngIf="alert.buttons?.length" align="end">
-    <button mat-raised-button class="alert-actions" *ngFor="let button of alert.buttons" (click)="button.action()">
+    <button mat-raised-button *ngFor="let button of alert.buttons" (click)="button.action()">
       {{ button.text }}
     </button>
   </mat-dialog-actions>

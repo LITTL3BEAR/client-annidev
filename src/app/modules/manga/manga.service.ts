@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -47,8 +47,17 @@ export class MangaService {
       .pipe(catchError(this.handleError));
   }
 
-  private handleError(error: any) {
-    console.error(error);
-    return throwError(() => error);
+  private handleError(error: HttpErrorResponse) {
+    console.log('error: ', error);
+    let errorMessage = 'An unknown error occurred.';
+
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      errorMessage = `Error Code: ${error.status}, Message: ${error.message}`;
+    }
+
+    console.error(errorMessage);
+    return throwError(() => errorMessage);
   }
 }

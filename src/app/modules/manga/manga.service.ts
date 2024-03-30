@@ -48,13 +48,14 @@ export class MangaService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    console.log('error: ', error);
     let errorMessage = 'An unknown error occurred.';
 
     if (error.error instanceof ErrorEvent) {
       errorMessage = `Error: ${error.error.message}`;
-    } else {
-      errorMessage = `Error Code: ${error.status}, Message: ${error.message}`;
+    } else if (error.status === 0) {
+      errorMessage = `Connection error, Please try again later.`;
+    } else if (error instanceof HttpErrorResponse) {
+      errorMessage = `Error Code: ${error.status}, Message: ${error.error.message}`;
     }
 
     console.error(errorMessage);

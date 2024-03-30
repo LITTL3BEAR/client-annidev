@@ -27,16 +27,20 @@ export class MangaListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-
     this.fetchMangas();
   }
 
   fetchMangas(): void {
-    this.mangaService.getAllManga().subscribe((mangas: Manga[]) => {
-      this.dataSource = new MatTableDataSource(mangas);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
-    });
+    this.alertService.loading()
+    this.mangaService.getAllManga().subscribe({
+      next: (mangas) => {
+        this.dataSource = new MatTableDataSource(mangas);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      },
+      error: (err) => this.alertService.error(err),
+      complete: () => this.alertService.close()
+    })
   }
 
   applyFilter(event: Event) {
@@ -56,9 +60,12 @@ export class MangaListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.mangaService.addManga(result).subscribe((newManga) => {
-          this.fetchMangas();
-        });
+        this.alertService.loading()
+        this.mangaService.addManga(result).subscribe({
+          next: (manga) => this.fetchMangas(),
+          error: (err) => this.alertService.error(err),
+          complete: () => this.alertService.close()
+        })
       }
     });
   }
@@ -78,23 +85,27 @@ export class MangaListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.mangaService.updateManga(manga._id, result).subscribe((updatedManga) => {
-          this.fetchMangas();
-        });
+        this.mangaService.updateManga(manga._id, result).subscribe({
+          next: (manga) => this.fetchMangas(),
+          error: (err) => this.alertService.error(err),
+          complete: () => this.alertService.close()
+        })
       }
     });
   }
 
   deleteManga(manga: Manga): void {
-    this.mangaService.deleteManga(manga._id).subscribe((deletedManga) => {
-      this.fetchMangas();
-    });
+    this.mangaService.deleteManga(manga._id).subscribe({
+      next: (manga) => this.fetchMangas(),
+      error: (err) => this.alertService.error(err),
+      complete: () => this.alertService.close()
+    })
   }
 
   syncManga(): void {
     this.alertService.loading()
     this.mangaService.syncManga().subscribe({
-      next: (res) => this.alertService.success(res),
+      next: (res) => this.fetchMangas(),
       error: (err) => this.alertService.error(err),
     })
   }

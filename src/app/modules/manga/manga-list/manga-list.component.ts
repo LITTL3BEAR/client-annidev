@@ -14,7 +14,7 @@ import { AlertService } from '../../../shared/components/alert/alert.service';
   styleUrls: ['./manga-list.component.scss']
 })
 export class MangaListComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'author', 'chapter', 'status', 'link', 'actions'];
+  displayedColumns: string[] = ['title', 'currentChapter', 'latestChapter', 'status', 'actions'];
   dataSource!: MatTableDataSource<Manga>;
 
   @ViewChild(MatSort) sort!: MatSort;

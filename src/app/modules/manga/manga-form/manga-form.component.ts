@@ -17,12 +17,13 @@ export class MangaFormComponent implements OnInit {
     private fb: FormBuilder,
   ) {
     const { isEdit, manga } = data
+    const getValue = (key: keyof typeof manga) => isEdit ? manga[key] : '';
     this.form = this.fb.group({
-      name: [isEdit ? manga.name : '', Validators.required],
-      author: [isEdit ? manga.author : ''],
-      chapter: [isEdit ? manga.chapter : ''],
-      status: [isEdit ? manga.status : ''],
-      link: [isEdit ? manga.link : ''],
+      title: [getValue('title'), Validators.required],
+      currentChapter: [getValue('currentChapter')],
+      latestChapter: [{ value: getValue('latestChapter'), disabled: true }],
+      status: [getValue('status')],
+      website: [getValue('website')],
     });
   }
 

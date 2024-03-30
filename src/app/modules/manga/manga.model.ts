@@ -1,8 +1,8 @@
 export class Manga {
   _id!: string;
-  name!: string;
-  author?: string;
-  chapter!: number;
+  title!: string;
+  currentChapter!: number;
+  latestChapter!: string;
   status!: string;
-  link?: string;
+  website?: string;
 }

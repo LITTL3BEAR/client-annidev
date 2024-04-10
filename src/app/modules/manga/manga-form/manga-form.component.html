@@ -14,12 +14,13 @@
 
     <mat-form-field>
       <mat-label>Latest Chapter</mat-label>
-      <input matInput formControlName="latestChapter" readonly>
+      <input matInput formControlName="latestChapter">
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Status</mat-label>
       <mat-select formControlName="status">
+        <mat-option value=""></mat-option>
         <mat-option value="new">New</mat-option>
         <mat-option value="read">Read</mat-option>
         <mat-option value="done">Done</mat-option>

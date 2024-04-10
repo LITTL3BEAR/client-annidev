@@ -16,14 +16,13 @@ export class MangaFormComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { manga: Manga, isEdit: boolean },
     private fb: FormBuilder,
   ) {
-    const { isEdit, manga } = data
-    const getValue = (key: keyof typeof manga) => isEdit ? manga[key] : '';
+    const { title = '', currentChapter = 0, latestChapter = 0, status = '', website = '' } = data.manga
     this.form = this.fb.group({
-      title: [getValue('title'), Validators.required],
-      currentChapter: [getValue('currentChapter')],
-      latestChapter: [{ value: getValue('latestChapter'), disabled: true }],
-      status: [getValue('status')],
-      website: [getValue('website')],
+      title: [title, Validators.required],
+      currentChapter: [currentChapter],
+      latestChapter: [{ value: latestChapter, disabled: false }],
+      status: [status],
+      website: [website],
     });
   }
 

@@ -32,8 +32,8 @@ export class MangaService {
       .pipe(catchError(this.handleError));
   }
 
-  updateManga(id: string, manga: Manga): Observable<any> {
-    return this.http.put(`${this.mangaUrl}/${id}`, manga, this.httpOptions)
+  updateManga(id: string, update: any): Observable<any> {
+    return this.http.put(`${this.mangaUrl}/${id}`, update, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 

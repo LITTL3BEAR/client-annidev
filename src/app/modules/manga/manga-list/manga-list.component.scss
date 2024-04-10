@@ -12,3 +12,15 @@ th {
   font-size: 14px;
   width: 100%;
 }
+
+.header-table {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5em;
+
+  .button-group {
+    display: flex;
+    align-items: center;
+  }
+}
+

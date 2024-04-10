@@ -95,19 +95,37 @@ export class MangaListComponent implements OnInit {
   }
 
   deleteManga(manga: Manga): void {
-    this.mangaService.deleteManga(manga._id).subscribe({
+    const deleteFn = () => this.mangaService.deleteManga(manga._id).subscribe({
       next: (manga) => this.fetchMangas(),
       error: (err) => this.alertService.error(err),
       complete: () => this.alertService.close()
     })
+
+    this.alertService.warning('Are you sure?', '', true, [
+      { text: 'Yes', action: () => deleteFn() },
+      { text: 'No', action: () => this.alertService.close() }
+    ]);
   }
 
-  syncManga(): void {
+  onSync(): void {
     this.alertService.loading()
     this.mangaService.syncManga().subscribe({
       next: (res) => this.fetchMangas(),
       error: (err) => this.alertService.error(err),
     })
+  }
+
+  onComplete(manga: Manga): void {
+    const completeFn = () => this.mangaService.updateManga(manga._id, { currentChapter: manga.latestChapter, status: 'read' }).subscribe({
+      next: (manga) => this.fetchMangas(),
+      error: (err) => this.alertService.error(err),
+      complete: () => this.alertService.close()
+    })
+
+    this.alertService.warning('Are you sure?', '', true, [
+      { text: 'Yes', action: () => completeFn() },
+      { text: 'No', action: () => this.alertService.close() }
+    ]);
   }
 
   alert(v: string): void {

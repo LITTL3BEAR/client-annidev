@@ -27,14 +27,43 @@ export class MangaListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.fetchMangas();
+    this.getManga();
   }
 
-  fetchMangas(conditions?: any): void {
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+  }
+
+  onSync(): void {
     this.alertService.loading()
-    this.mangaService.getAllManga(conditions).subscribe({
-      next: (mangas) => {
-        this.dataSource = new MatTableDataSource(mangas);
+    this.mangaService.syncManga().subscribe({
+      next: () => this.getManga({ status: 'new' }),
+      error: (err) => this.alertService.error(err),
+    })
+  }
+
+  onComplete(manga: Manga): void {
+    const updateValue = { currentChapter: manga.latestChapter, status: 'read' };
+    const completeFn = () => this.mangaService.updateManga(manga._id, updateValue).subscribe({
+      next: () => this.editTableData(manga._id, updateValue),
+      error: (err) => this.alertService.error(err),
+      complete: () => this.alertService.close()
+    })
+
+    this.alertService.warning('Are you sure?', '', true, [
+      { text: 'Yes', action: () => completeFn() },
+      { text: 'No', action: () => this.alertService.close() }
+    ]);
+  }
+
+  getManga(conditions?: any): void {
+    this.alertService.loading()
+    this.mangaService.readManga(conditions).subscribe({
+      next: (res) => {
+        this.dataSource = new MatTableDataSource(res);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
       },
@@ -43,37 +72,21 @@ export class MangaListComponent implements OnInit {
     })
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-  }
-
   addManga(): void {
     const dialogRef = this.dialog.open(MangaFormComponent, {
       width: '250px',
       data: { manga: {}, isEdit: false }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+    dialogRef.afterClosed().subscribe(manga => {
+      if (manga) {
         this.alertService.loading()
-        this.mangaService.addManga(result).subscribe({
-          next: (manga) => this.fetchMangas(),
+        this.mangaService.createManga(manga).subscribe({
+          next: (res) => this.addTableData(res),
           error: (err) => this.alertService.error(err),
           complete: () => this.alertService.close()
         })
       }
-    });
-  }
-
-  viewManga(manga: Manga): void {
-    this.dialog.open(MangaFormComponent, {
-      width: '250px',
-      data: { manga, isEdit: true }
     });
   }
 
@@ -83,10 +96,10 @@ export class MangaListComponent implements OnInit {
       data: { manga, isEdit: true }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.mangaService.updateManga(manga._id, result).subscribe({
-          next: (manga) => this.fetchMangas(),
+    dialogRef.afterClosed().subscribe(updateValue => {
+      if (updateValue) {
+        this.mangaService.updateManga(manga._id, updateValue).subscribe({
+          next: (res) => this.editTableData(res._id, updateValue),
           error: (err) => this.alertService.error(err),
           complete: () => this.alertService.close()
         })
@@ -96,7 +109,7 @@ export class MangaListComponent implements OnInit {
 
   deleteManga(manga: Manga): void {
     const deleteFn = () => this.mangaService.deleteManga(manga._id).subscribe({
-      next: (manga) => this.fetchMangas(),
+      next: (res) => this.deleteTableData(res._id),
       error: (err) => this.alertService.error(err),
       complete: () => this.alertService.close()
     })
@@ -107,25 +120,27 @@ export class MangaListComponent implements OnInit {
     ]);
   }
 
-  onSync(): void {
-    this.alertService.loading()
-    this.mangaService.syncManga().subscribe({
-      next: (res) => this.fetchMangas({ status: 'new' }),
-      error: (err) => this.alertService.error(err),
-    })
+  addTableData(manga: Manga): void {
+    this.dataSource.data.push(manga);
+    this.dataSource._updateChangeSubscription();
   }
 
-  onComplete(manga: Manga): void {
-    const completeFn = () => this.mangaService.updateManga(manga._id, { currentChapter: manga.latestChapter, status: 'read' }).subscribe({
-      next: (manga) => this.fetchMangas(),
-      error: (err) => this.alertService.error(err),
-      complete: () => this.alertService.close()
-    })
+  editTableData(id: string, updatedValue: any): void {
+    const index = this.dataSource.data.findIndex(item => item._id === id);
 
-    this.alertService.warning('Are you sure?', '', true, [
-      { text: 'Yes', action: () => completeFn() },
-      { text: 'No', action: () => this.alertService.close() }
-    ]);
+    if (index > -1) {
+      this.dataSource.data[index] = { ...this.dataSource.data[index], ...updatedValue };
+      this.dataSource._updateChangeSubscription();
+    }
+  }
+
+  deleteTableData(id: string): void {
+    const index = this.dataSource.data.findIndex(item => item._id === id);
+
+    if (index > -1) {
+      this.dataSource.data.splice(index, 1);
+      this.dataSource._updateChangeSubscription();
+    }
   }
 
   alert(v: string): void {

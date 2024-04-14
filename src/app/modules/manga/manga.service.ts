@@ -17,24 +17,19 @@ export class MangaService {
 
   constructor(private http: HttpClient) { }
 
-  getAllManga(conditions?: any): Observable<Manga[]> {
+  createManga(manga: Manga): Observable<Manga> {
+    return this.http.post<Manga>(this.mangaUrl, manga, this.httpOptions)
+      .pipe(catchError(this.handleError));
+  }
+
+  readManga(conditions?: any): Observable<Manga[]> {
     const params = new HttpParams({ fromObject: conditions || {} });
     return this.http.get<Manga[]>(this.mangaUrl, { params })
       .pipe(catchError(this.handleError));
   }
 
-  getManga(id: string): Observable<Manga> {
-    return this.http.get<Manga>(`${this.mangaUrl}/${id}`)
-      .pipe(catchError(this.handleError));
-  }
-
-  addManga(manga: Manga): Observable<Manga> {
-    return this.http.post<Manga>(this.mangaUrl, manga, this.httpOptions)
-      .pipe(catchError(this.handleError));
-  }
-
-  updateManga(id: string, update: any): Observable<any> {
-    return this.http.put(`${this.mangaUrl}/${id}`, update, this.httpOptions)
+  updateManga(id: string, updateValue: any): Observable<any> {
+    return this.http.put(`${this.mangaUrl}/${id}`, updateValue, this.httpOptions)
       .pipe(catchError(this.handleError));
   }
 

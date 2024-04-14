@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
@@ -17,8 +17,9 @@ export class MangaService {
 
   constructor(private http: HttpClient) { }
 
-  getAllManga(): Observable<Manga[]> {
-    return this.http.get<Manga[]>(this.mangaUrl)
+  getAllManga(conditions?: any): Observable<Manga[]> {
+    const params = new HttpParams({ fromObject: conditions || {} });
+    return this.http.get<Manga[]>(this.mangaUrl, { params })
       .pipe(catchError(this.handleError));
   }
 

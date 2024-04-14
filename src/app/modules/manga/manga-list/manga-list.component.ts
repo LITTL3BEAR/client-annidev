@@ -30,9 +30,9 @@ export class MangaListComponent implements OnInit {
     this.fetchMangas();
   }
 
-  fetchMangas(): void {
+  fetchMangas(conditions?: any): void {
     this.alertService.loading()
-    this.mangaService.getAllManga().subscribe({
+    this.mangaService.getAllManga(conditions).subscribe({
       next: (mangas) => {
         this.dataSource = new MatTableDataSource(mangas);
         this.dataSource.sort = this.sort;
@@ -110,7 +110,7 @@ export class MangaListComponent implements OnInit {
   onSync(): void {
     this.alertService.loading()
     this.mangaService.syncManga().subscribe({
-      next: (res) => this.fetchMangas(),
+      next: (res) => this.fetchMangas({ status: 'new' }),
       error: (err) => this.alertService.error(err),
     })
   }

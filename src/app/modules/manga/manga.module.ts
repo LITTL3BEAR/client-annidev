@@ -10,6 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 import { MangaRoutingModule } from './manga-routing.module';
 import { MangaComponent } from './manga.component';
@@ -38,6 +40,8 @@ import { SharedModule } from '../../shared/shared.module';
     MatTooltipModule,
     MatDialogModule,
     SharedModule,
+    MatCardModule,
+    MatGridListModule,
   ],
   providers: [MangaService],
 })

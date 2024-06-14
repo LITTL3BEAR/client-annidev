@@ -1,15 +1,9 @@
-<div style="padding: 1rem;" align="center">
-  <button mat-raised-button color="primary" (click)="alert('loading')">loading</button>
-  <button mat-raised-button color="primary" (click)="alert('success')">success</button>
-  <button mat-raised-button color="accent" (click)="alert('error')">error</button>
-  <button mat-raised-button color="warn" (click)="alert('warning')">warning</button>
-</div>
-
-<div class="mat-elevation-z2">
+<!-- TABLE -->
+<!-- <div class="mat-elevation-z2">
   <div class="header-table">
     <div class="button-group">
+      <button mat-icon-button color="primary" (click)="onAdd()"><mat-icon>add_box</mat-icon></button>
       <button mat-icon-button color="accent" (click)="onSync()"><mat-icon>sync</mat-icon></button>
-      <button mat-icon-button color="primary" (click)="addManga()"><mat-icon>add_box</mat-icon></button>
     </div>
   
     <mat-form-field class="filter-box">
@@ -44,19 +38,56 @@
       <td mat-cell *matCellDef="let element">
         <a mat-icon-button color="primary" href="{{element.website}}" target="_blank"><mat-icon>language</mat-icon></a>
         <button mat-icon-button color="primary" (click)="onComplete(element)" [disabled]="element.status === 'read'"><mat-icon>task_alt</mat-icon></button>
-        <button mat-icon-button color="accent" (click)="editManga(element)"><mat-icon>edit</mat-icon></button>
-        <button mat-icon-button color="warn" (click)="deleteManga(element)"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button color="accent" (click)="onEdit(element)"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="warn" (click)="onDelete(element)"><mat-icon>delete</mat-icon></button>
       </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-    <!-- Row shown when there is no matching data. -->
     <tr class="mat-row" *matNoDataRow>
       <td class="mat-cell" colspan="4">Data not found.</td>
     </tr>
   </table>
 
   <mat-paginator [pageSizeOptions]="[ 10, 20, 50]" showFirstLastButtons></mat-paginator>
+</div> -->
+
+<!-- GRID -->
+<div class="container">
+  <div class="nav">
+    <button mat-icon-button color="primary" (click)="onAdd()"><mat-icon>add_box</mat-icon></button>
+    <button mat-icon-button color="accent" (click)="onSync()"><mat-icon>sync</mat-icon></button>
+  </div>
+
+  <mat-grid-list [cols]="cols" rowHeight="400px">
+    <mat-grid-tile *ngFor="let element of mangaList | async">
+
+      <mat-card>
+        <mat-card-title class="truncate">{{ element.title }}</mat-card-title>
+
+        <img mat-card-image [src]="'https://royalarcadenorwich.co.uk/wp-content/uploads/2017/07/150x150.png'"
+          alt="{{ element.title }}">
+
+        <mat-card-content>
+          <span>Current Chapter: {{ element.currentChapter }}</span><br>
+          <span>Latest Chapter: {{ element.latestChapter }}</span><br>
+          <span>Status: {{ element.status }}</span><br>
+        </mat-card-content>
+
+        <mat-card-actions>
+          <a mat-icon-button color="primary" href="{{element.website}}"
+            target="_blank"><mat-icon>language</mat-icon></a>
+          <button mat-icon-button color="primary" (click)="onComplete(element)"
+            [disabled]="element.status === 'read'"><mat-icon>task_alt</mat-icon></button>
+          <button mat-icon-button color="accent" (click)="onEdit(element)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="warn" (click)="onDelete(element)"><mat-icon>delete</mat-icon></button>
+        </mat-card-actions>
+      </mat-card>
+
+    </mat-grid-tile>
+
+    <span *ngIf="!mangaList.getValue().length">Data not found.</span>
+  </mat-grid-list>
 </div>

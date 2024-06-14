@@ -7,6 +7,8 @@ import { MangaFormComponent } from '../manga-form/manga-form.component';
 import { MangaService } from '../manga.service';
 import { Manga } from '../manga.model';
 import { AlertService } from '../../../shared/components/alert/alert.service';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-manga-list',
@@ -20,21 +22,35 @@ export class MangaListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  cols: any = 2;
+  mangaList: BehaviorSubject<Manga[]> = new BehaviorSubject<Manga[]>([]);
+
   constructor(
     public dialog: MatDialog,
     public mangaService: MangaService,
-    public alertService: AlertService
-  ) { }
-
-  ngOnInit(): void {
-    this.getManga();
+    public alertService: AlertService,
+    private breakpointObserver: BreakpointObserver,
+  ) {
+    this.breakpointObserver.observe([
+      Breakpoints.HandsetPortrait,
+      Breakpoints.TabletPortrait,
+      Breakpoints.TabletLandscape,
+      Breakpoints.WebLandscape
+    ]).subscribe((result: any) => {
+      if (this.breakpointObserver.isMatched(Breakpoints.HandsetPortrait)) {
+        this.cols = 1;
+      } else if (this.breakpointObserver.isMatched(Breakpoints.TabletPortrait)) {
+        this.cols = 2;
+      } else if (this.breakpointObserver.isMatched(Breakpoints.TabletLandscape)) {
+        this.cols = 3;
+      } else if (this.breakpointObserver.isMatched(Breakpoints.WebLandscape)) {
+        this.cols = 5;
+      }
+    });
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
+  ngOnInit(): void {
+    this.getManga({ status: 'new' });
   }
 
   onSync(): void {
@@ -43,6 +59,54 @@ export class MangaListComponent implements OnInit {
       next: () => this.getManga({ status: 'new' }),
       error: (err) => this.alertService.error(err),
     })
+  }
+
+  onAdd(): void {
+    const dialogRef = this.dialog.open(MangaFormComponent, {
+      width: '250px',
+      data: { manga: {}, isEdit: false }
+    });
+
+    dialogRef.afterClosed().subscribe(manga => {
+      if (manga) {
+        this.alertService.loading()
+        this.mangaService.createManga(manga).subscribe({
+          next: (res) => this.addTableData(res),
+          error: (err) => this.alertService.error(err),
+          complete: () => this.alertService.close()
+        })
+      }
+    });
+  }
+
+  onEdit(manga: Manga): void {
+    const dialogRef = this.dialog.open(MangaFormComponent, {
+      width: '250px',
+      data: { manga, isEdit: true }
+    });
+
+    dialogRef.afterClosed().subscribe(updateValue => {
+      if (updateValue) {
+        this.mangaService.updateManga(manga._id, updateValue).subscribe({
+          next: (res) => this.editTableData(res._id, updateValue),
+          error: (err) => this.alertService.error(err),
+          complete: () => this.alertService.close()
+        })
+      }
+    });
+  }
+
+  onDelete(manga: Manga): void {
+    const deleteFn = () => this.mangaService.deleteManga(manga._id).subscribe({
+      next: (res) => this.deleteTableData(res._id),
+      error: (err) => this.alertService.error(err),
+      complete: () => this.alertService.close()
+    })
+
+    this.alertService.warning('Are you sure?', '', true, [
+      { text: 'Yes', action: () => deleteFn() },
+      { text: 'No', action: () => this.alertService.close() }
+    ]);
   }
 
   onComplete(manga: Manga): void {
@@ -63,6 +127,7 @@ export class MangaListComponent implements OnInit {
     this.alertService.loading()
     this.mangaService.readManga(conditions).subscribe({
       next: (res) => {
+        this.mangaList.next(res);
         this.dataSource = new MatTableDataSource(res);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
@@ -72,52 +137,12 @@ export class MangaListComponent implements OnInit {
     })
   }
 
-  addManga(): void {
-    const dialogRef = this.dialog.open(MangaFormComponent, {
-      width: '250px',
-      data: { manga: {}, isEdit: false }
-    });
+  // TABLE MANAGEMENT
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    dialogRef.afterClosed().subscribe(manga => {
-      if (manga) {
-        this.alertService.loading()
-        this.mangaService.createManga(manga).subscribe({
-          next: (res) => this.addTableData(res),
-          error: (err) => this.alertService.error(err),
-          complete: () => this.alertService.close()
-        })
-      }
-    });
-  }
-
-  editManga(manga: Manga): void {
-    const dialogRef = this.dialog.open(MangaFormComponent, {
-      width: '250px',
-      data: { manga, isEdit: true }
-    });
-
-    dialogRef.afterClosed().subscribe(updateValue => {
-      if (updateValue) {
-        this.mangaService.updateManga(manga._id, updateValue).subscribe({
-          next: (res) => this.editTableData(res._id, updateValue),
-          error: (err) => this.alertService.error(err),
-          complete: () => this.alertService.close()
-        })
-      }
-    });
-  }
-
-  deleteManga(manga: Manga): void {
-    const deleteFn = () => this.mangaService.deleteManga(manga._id).subscribe({
-      next: (res) => this.deleteTableData(res._id),
-      error: (err) => this.alertService.error(err),
-      complete: () => this.alertService.close()
-    })
-
-    this.alertService.warning('Are you sure?', '', true, [
-      { text: 'Yes', action: () => deleteFn() },
-      { text: 'No', action: () => this.alertService.close() }
-    ]);
+    if (this.dataSource.paginator) this.dataSource.paginator.firstPage();
   }
 
   addTableData(manga: Manga): void {
@@ -143,7 +168,8 @@ export class MangaListComponent implements OnInit {
     }
   }
 
-  alert(v: string): void {
+  // OTHER
+  _alert(v: string): void {
     if (v == 'loading') this.alertService.loading()
     if (v == 'success') this.alertService.success('Operation successful!')
     if (v == 'error') this.alertService.error('Can not add new data', 'Insert Data')

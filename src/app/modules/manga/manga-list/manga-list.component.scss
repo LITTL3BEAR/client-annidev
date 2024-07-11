@@ -38,9 +38,86 @@
 
 }
 
+
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1em;
+}
+
+.toolbar {
+  /* ป้องกันการไม่หดตัว */
+  flex-shrink: 0;
+  margin-bottom: 1em;
+}
+
+.viewport {
+  /* ขยายตัวเต็มพื้นที่ว่างที่เหลือ */
+  flex-grow: 1;
+  /* สำคัญสำหรับ Firefox */
+  min-height: 0;
+}
+
+.grid-container {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+/* สำหรับมือถือ */
+@media (max-width: 600px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.grid-item {
+  background-color: #f1f1f1;
+  text-align: center;
+  /* ต้องตรงกับ itemSize ใน viewport */
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+mat-card-title {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  /* ป้องกันการล้น */
+  overflow: hidden;
+}
+
+mat-card-actions {
+  /* ดันให้อยู่ล่างสุด */
+  margin-top: auto;
+  /* ป้องกันการไม่หดตัว */
+  flex-shrink: 0;
+}
+
 .truncate {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 200px /* Adjust this value as needed */
+  width: 100%;
+  /* ป้องกันการชิดขอบ */
+  padding: 0 10px;
+  /* รวม padding ในความกว้าง */
+  box-sizing: border-box;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  color: #777;
 }

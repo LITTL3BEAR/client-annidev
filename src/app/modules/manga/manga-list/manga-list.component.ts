@@ -1,19 +1,21 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatDialog } from '@angular/material/dialog';
-import { MangaFormComponent } from '../manga-form/manga-form.component';
+
+import { BehaviorSubject } from 'rxjs';
+
 import { MangaService } from '../manga.service';
 import { Manga } from '../manga.model';
+import { MangaFormComponent } from '../manga-form/manga-form.component';
 import { AlertService } from '../../../shared/components/alert/alert.service';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-manga-list',
   templateUrl: './manga-list.component.html',
-  styleUrls: ['./manga-list.component.scss']
+  styleUrls: ['./manga-list.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MangaListComponent implements OnInit {
   displayedColumns: string[] = ['title', 'currentChapter', 'latestChapter', 'status', 'actions'];
@@ -22,37 +24,37 @@ export class MangaListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  cols: any = 2;
-  mangaList: BehaviorSubject<Manga[]> = new BehaviorSubject<Manga[]>([]);
+  mangaList: BehaviorSubject<Manga[]> = new BehaviorSubject<Manga[]>([]);   // TODO
 
   constructor(
     public dialog: MatDialog,
     public mangaService: MangaService,
     public alertService: AlertService,
-    private breakpointObserver: BreakpointObserver,
-  ) {
-    this.breakpointObserver.observe([
-      Breakpoints.HandsetPortrait,
-      Breakpoints.TabletPortrait,
-      Breakpoints.TabletLandscape,
-      Breakpoints.WebLandscape
-    ]).subscribe((result: any) => {
-      if (this.breakpointObserver.isMatched(Breakpoints.HandsetPortrait)) {
-        this.cols = 1;
-      } else if (this.breakpointObserver.isMatched(Breakpoints.TabletPortrait)) {
-        this.cols = 2;
-      } else if (this.breakpointObserver.isMatched(Breakpoints.TabletLandscape)) {
-        this.cols = 3;
-      } else if (this.breakpointObserver.isMatched(Breakpoints.WebLandscape)) {
-        this.cols = 5;
-      }
-    });
-  }
+  ) { }
 
   ngOnInit(): void {
-    this.getManga({ status: 'new' });
+    this.getManga({});
   }
 
+  getManga(conditions?: any): void {
+    this.alertService.loading()
+    this.mangaService.readManga(conditions).subscribe({
+      next: (res) => {
+        this.mangaList.next(res);
+        this.dataSource = new MatTableDataSource(res);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      },
+      error: (err) => this.alertService.error(err),
+      complete: () => this.alertService.close()
+    })
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item._id;
+  }
+
+  /* Action Buttons */
   onSync(): void {
     this.alertService.loading()
     this.mangaService.syncManga().subscribe({
@@ -123,21 +125,7 @@ export class MangaListComponent implements OnInit {
     ]);
   }
 
-  getManga(conditions?: any): void {
-    this.alertService.loading()
-    this.mangaService.readManga(conditions).subscribe({
-      next: (res) => {
-        this.mangaList.next(res);
-        this.dataSource = new MatTableDataSource(res);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-      },
-      error: (err) => this.alertService.error(err),
-      complete: () => this.alertService.close()
-    })
-  }
-
-  // TABLE MANAGEMENT
+  /* List Management */
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
@@ -168,7 +156,7 @@ export class MangaListComponent implements OnInit {
     }
   }
 
-  // OTHER
+
   _alert(v: string): void {
     if (v == 'loading') this.alertService.loading()
     if (v == 'success') this.alertService.success('Operation successful!')

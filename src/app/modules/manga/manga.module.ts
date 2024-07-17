@@ -14,7 +14,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
 import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { MangaRoutingModule } from './manga-routing.module';
@@ -22,7 +21,6 @@ import { MangaService } from './manga.service';
 import { MangaComponent } from './manga.component';
 import { MangaFormComponent } from './manga-form/manga-form.component';
 import { MangaListComponent } from './manga-list/manga-list.component';
-
 import { SharedModule } from '../../shared/shared.module';
 
 @NgModule({

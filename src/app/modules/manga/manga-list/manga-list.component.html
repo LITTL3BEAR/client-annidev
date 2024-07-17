@@ -1,4 +1,5 @@
 <div class="table-container">
+  
   <div class="header-table">
     <div class="button-group">
       <button mat-icon-button color="primary" (click)="onAdd()"><mat-icon>add_box</mat-icon></button>
@@ -11,8 +12,9 @@
     </mat-form-field>
   </div>
 
-  <div class="body-table" style="margin-top: 1em;">
+  <div class="body-table">
     <table mat-table [dataSource]="dataSource" matSort>
+      
       <ng-container matColumnDef="title">
         <th mat-header-cell *matHeaderCellDef mat-sort-header>Title</th>
         <td mat-cell *matCellDef="let element">{{element.title}}</td>
@@ -50,56 +52,7 @@
         <td class="mat-cell" colspan="4">Data not found.</td>
       </tr>
     </table>
+    
+    <mat-paginator [pageSizeOptions]="[ 10, 20, 50]" showFirstLastButtons></mat-paginator>
   </div>
-
-  <mat-paginator [pageSizeOptions]="[ 10, 20, 50]" showFirstLastButtons></mat-paginator>
-</div>
-
-
-<div class="container">
-  <div class="toolbar">
-    <button mat-icon-button color="primary" (click)="onAdd()" aria-label="Add new item">
-      <mat-icon>add_box</mat-icon>
-    </button>
-    <button mat-icon-button color="accent" (click)="onSync()" aria-label="Synchronize data">
-      <mat-icon>sync</mat-icon>
-    </button>
-  </div>
-
-  <ng-container *ngIf="mangaList | async as mangaItems">
-    <ng-container *ngIf="mangaItems.length; else empty">
-      <cdk-virtual-scroll-viewport itemSize="150" class="viewport">
-        <div class="grid-container">
-          <ng-container *cdkVirtualFor="let item of mangaItems; trackBy: trackByFn">
-            <mat-card class="grid-item">
-              <mat-card-title>
-                <div class="truncate" [matTooltip]="item.title">{{ item.title }}</div>
-              </mat-card-title>
-              <mat-card-actions>
-                <a mat-icon-button color="primary" [href]="item.website" target="_blank" aria-label="Open website">
-                  <mat-icon>language</mat-icon>
-                </a>
-                <button mat-icon-button color="primary" (click)="onComplete(item)" [disabled]="item.status === 'read'" aria-label="Mark as complete">
-                  <mat-icon>task_alt</mat-icon>
-                </button>
-                <button mat-icon-button color="accent" (click)="onEdit(item)" aria-label="Edit item">
-                  <mat-icon>edit</mat-icon>
-                </button>
-                <button mat-icon-button color="warn" (click)="onDelete(item)" aria-label="Delete item">
-                  <mat-icon>delete</mat-icon>
-                </button>
-              </mat-card-actions>
-            </mat-card>
-          </ng-container>
-        </div>
-      </cdk-virtual-scroll-viewport>
-    </ng-container>
-  </ng-container>
-
-  <ng-template #empty>
-    <div class="empty-state">
-      <mat-icon>sentiment_dissatisfied</mat-icon>
-      <p>No manga found.</p>
-    </div>
-  </ng-template>
 </div>

@@ -24,8 +24,6 @@ export class MangaListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  mangaList: BehaviorSubject<Manga[]> = new BehaviorSubject<Manga[]>([]);   // TODO
-
   constructor(
     public dialog: MatDialog,
     public mangaService: MangaService,
@@ -33,17 +31,16 @@ export class MangaListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.getManga({});
+    this.loadData({});
   }
 
-  getManga(conditions?: any): void {
+  loadData(conditions?: any): void {
     this.alertService.loading()
     this.mangaService.readManga(conditions).subscribe({
       next: (res) => {
-        this.mangaList.next(res);
         this.dataSource = new MatTableDataSource(res);
-        this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       },
       error: (err) => this.alertService.error(err),
       complete: () => this.alertService.close()
@@ -58,7 +55,7 @@ export class MangaListComponent implements OnInit {
   onSync(): void {
     this.alertService.loading()
     this.mangaService.syncManga().subscribe({
-      next: () => this.getManga({ status: 'new' }),
+      next: () => this.loadData({ status: 'new' }),
       error: (err) => this.alertService.error(err),
     })
   }
